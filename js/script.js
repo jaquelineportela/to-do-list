@@ -1,6 +1,8 @@
+'use strict';
 
 const getDb = () => JSON.parse(localStorage.getItem('toDoList')) ?? []; 
 const setDb = (db) => localStorage.setItem('toDoList', JSON.stringify(db));     
+
 const createItem = (tarefa, status, indice) => {
     const item = document.createElement('label');
     item.classList.add('todoItem');
@@ -18,7 +20,7 @@ const cleanTask = () => {
         toDoList.removeChild(toDoList.lastChild);
     }
 }
-const refreshScreen = () => {
+const refreshScreen = (indice) => {
     cleanTask();
     const db = getDb();
     db.forEach ((item, indice) => createItem(item.tarefa, item.status, indice));
@@ -27,9 +29,9 @@ const insertItem = (event) => {
     const tecla = event.key;
     const texto = event.target.value;
     if(tecla == 'Enter') {
-        const db = getDb(db);
+        const db = getDb();
         db.push({'tarefa': texto, 'status': ''});
-        setDd()
+        setDb(db);
         refreshScreen();
         event.target.value = '';
     }
@@ -44,6 +46,7 @@ const UpdateItem = (indice) => {
     const db = getDb();
     db[indice].status = db[indice].status == '' ? 'checked' : '';
     setDb(db);
+    refreshScreen();
 }
 const clickItem = (event) =>  {
     const element = event.target;
@@ -53,7 +56,7 @@ const clickItem = (event) =>  {
     }
     else if(element.type == 'checkbox') {
         const indice = element.dataset.indice;
-        refreshScreen(indice);
+        UpdateItem(indice);
     }
 }
 
